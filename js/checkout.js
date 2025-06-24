@@ -1,26 +1,26 @@
 document.addEventListener("DOMContentLoaded", () => {
-  loadCheckoutPage()
-  setupCheckoutForm()
-})
+  loadCheckoutPage();
+  setupCheckoutForm();
+});
 
 function loadCheckoutPage() {
-  const cartItems = cartManager.getItems()
+  const cartItems = cartManager.getItems();
 
   if (cartItems.length === 0) {
-    window.location.href = "cart.html"
-    return
+    window.location.href = "cart.html";
+    return;
   }
 
-  displayOrderSummary(cartItems)
-  prefillUserInfo()
+  displayOrderSummary(cartItems);
+  prefillUserInfo();
 }
 
 function displayOrderSummary(items) {
-  const container = document.getElementById("orderSummary")
-  const subtotal = cartManager.getTotal()
-  const shipping = 10.0
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+  const container = document.getElementById("orderSummary");
+  const subtotal = cartManager.getTotal();
+  const shipping = 10.0;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
 
   container.innerHTML = `
         <div class="order-items">
@@ -62,80 +62,83 @@ function displayOrderSummary(items) {
         <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg w-100" id="placeOrderBtn">
             Place Order - $${total.toFixed(2)}
         </button>
-    `
+    `;
 }
 
 function prefillUserInfo() {
-  const user = authManager.getCurrentUser()
+  const user = authManager?.getCurrentUser();
   if (user) {
-    const emailInput = document.querySelector('input[name="email"]')
+    const emailInput = document.querySelector('input[name="email"]');
     if (emailInput) {
-      emailInput.value = user.email
+      emailInput.value = user.email;
     }
   }
 }
 
 function setupCheckoutForm() {
-  const form = document.getElementById("checkoutForm")
-  if (!form) return
+  const form = document.getElementById("checkoutForm");
+  if (!form) return;
 
   form.addEventListener("submit", (e) => {
-    e.preventDefault()
-    processOrder()
-  })
+    e.preventDefault();
+    processOrder();
+  });
 }
 
 function processOrder() {
-  const form = document.getElementById("checkoutForm")
-  const formData = new FormData(form)
-  const placeOrderBtn = document.getElementById("placeOrderBtn")
+  const form = document.getElementById("checkoutForm");
+  const formData = new FormData(form);
+  const placeOrderBtn = document.getElementById("placeOrderBtn");
 
-  placeOrderBtn.disabled = true
-  placeOrderBtn.textContent = "Processing..."
+  placeOrderBtn.disabled = true;
+  placeOrderBtn.textContent = "Processing...";
 
   setTimeout(() => {
-    const cartItems = cartManager.getItems()
-    const subtotal = cartManager.getTotal()
-    const shipping = 10.0
-    const tax = subtotal * 0.08
-    const total = subtotal + shipping + tax
+    const cartItems = cartManager.getItems();
+    const subtotal = cartManager.getTotal();
+    const shipping = 10.0;
+    const tax = subtotal * 0.08;
+    const total = subtotal + shipping + tax;
 
-    // ✅ Pastikan deklarasi transaction ADA
     const transaction = {
       id: Date.now().toString(),
-      items: cartItems,
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image,
+        size: item.size || "-",
+        color: item.color || "-"
+      })),
       total: total,
       shippingInfo: {
-        firstName: formData.get("firstName"),
-        lastName: formData.get("lastName"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
+        firstName: formData.get("firstName") || "-",
+        lastName: formData.get("lastName") || "-",
+        email: formData.get("email") || "-",
+        phone: formData.get("phone") || "-",
         address: formData.get("address") || "-",
         city: formData.get("city") || "-",
         state: formData.get("state") || "-",
         zipCode: formData.get("zipCode") || "-"
       },
       paymentInfo: {
-        cardName: formData.get("cardName"),
-        expiryDate: formData.get("expiryDate")
+        cardName: formData.get("cardName") || "-",
+        cardNumber: "**** **** **** " + (formData.get("cardNumber")?.slice(-4) || "****"),
+        expiryDate: formData.get("expiryDate") || "-"
       },
       status: "completed",
       date: new Date().toISOString(),
-      userId: authManager.getCurrentUser()?.id || "guest"
-    }
+      userId: authManager?.getCurrentUser()?.id || "guest"
+    };
 
-    const transactions = JSON.parse(localStorage.getItem("transactions") || "[]")
-    transactions.push(transaction)
-    localStorage.setItem("transactions", JSON.stringify(transactions))
+    const transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+    transactions.push(transaction);
+    localStorage.setItem("transactions", JSON.stringify(transactions));
 
-    cartManager.clearCart()
+    cartManager.clearCart();
 
-    alert("Order placed successfully! Thank you for your purchase.")
-    window.location.href = "history-transactions.html"
-  }, 2000)
+    alert("Order placed successfully! Thank you for your purchase.");
+    window.location.href = "history-transactions.html";
+  }, 2000);
 }
-
-
-const existingTransactions = JSON.parse(localStorage.getItem("transactions") || "[]");
-existingTransactions.push(transaction);
-localStorage.setItem("transactions", JSON.stringify(existingTransactions));

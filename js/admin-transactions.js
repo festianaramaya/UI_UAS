@@ -58,8 +58,12 @@ function displayTransactions(filteredTransactions = null) {
             <button class="btn btn-sm btn-primary" onclick="updateTransactionStatus('${transaction.id}')">
               <i class="fas fa-edit"></i>
             </button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTransaction('${transaction.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
           </div>
         </td>
+
       </tr>
     `;
   }).join("");
@@ -208,6 +212,20 @@ function updateTransactionStatus(id) {
 
   document.getElementById("transactionStatus").value = transaction.status;
   document.getElementById("statusModal").classList.add("show");
+}
+
+function deleteTransaction(id) {
+  const confirmed = confirm("Apakah kamu yakin ingin menghapus transaksi ini?");
+  if (!confirmed) return;
+
+  const index = transactions.findIndex(t => t.id === id);
+  if (index !== -1) {
+    transactions.splice(index, 1); // hapus dari array
+    saveTransactions();           // simpan ke localStorage
+    displayTransactions();       // perbarui tampilan
+    updateStats();               // perbarui statistik
+    showAlert("Transaksi berhasil dihapus!", "success");
+  }
 }
 
 function updateStatus() {

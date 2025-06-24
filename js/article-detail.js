@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = urlParams.get("id");
 
+  // Ambil artikel dari localStorage
   const storedArticles = localStorage.getItem("articles");
   const articles = storedArticles ? JSON.parse(storedArticles) : [];
 

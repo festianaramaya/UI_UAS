@@ -105,6 +105,30 @@ class AuthManager {
 // Initialize auth manager
 const authManager = new AuthManager()
 
+function registerUser(name, email, password) {
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const exists = users.find(u => u.email === email);
+  if (exists) return authManager.showAlert("Email sudah terdaftar", "danger");
+
+  const newUser = { id: Date.now().toString(), name, email, password, role: "user" };
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+  authManager.showAlert("Registrasi berhasil!", "success");
+  setTimeout(() => window.location.href = "login.html", 1000);
+}
+
+function loginWithEmail(email, password) {
+  const users = JSON.parse(localStorage.getItem("users") || "[]");
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) return authManager.showAlert("Login gagal", "danger");
+
+  authManager.saveUser(user);
+  authManager.updateUI();
+  authManager.showAlert("Login berhasil!", "success");
+  setTimeout(() => window.location.href = "index.html", 1000);
+}
+
+
 // Global functions for login/logout
 function login(role) {
   authManager.login(role)
