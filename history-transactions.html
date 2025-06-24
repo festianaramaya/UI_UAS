@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - .feastion</title>
+    <link href="/globals.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/history.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">.feastion</a></div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="articles.html">Articles</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown" id="userDropdown">
+                        <div id="loginSection">
+                            <a href="#" onclick="login('user')">Login as User</a>
+                            <a href="#" onclick="login('admin')">Login as Admin</a>
+                        </div>
+                        <div id="userSection" style="display: none;">
+                            <a href="history-transactions.html">Order History</a>
+                            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Order History</h1>
+            </div>
+
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>ID Transaksi</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTableBody"></tbody>
+            </table>
+            <div id="noTransactions" class="text-center mt-3" style="display: none;">
+                <p>No transactions found.</p>
+            </div>
+
+            <!-- Modal untuk Detail Transaksi -->
+            <div id="transactionDetailModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeTransactionModal()">&times;</span>
+                    <h2>Detail Transaksi</h2>
+                    <div id="transactionDetailContent"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>.feastion</h3>
+                <p>Your premier destination for fashion-forward clothing and accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 .feastion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/history-transactions.js"></script>
+    <script>
+        // Fungsi untuk memuat dan menampilkan riwayat transaksi
+        function loadTransactions() {
+            const storedTransactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+            const userId = window.authManager?.getCurrentUser()?.id || "guest";
+            const transactions = storedTransactions.filter(t => t.userId === userId);
+
+            const tbody = document.getElementById("transactionsTableBody");
+            const noTransactions = document.getElementById("noTransactions");
+
+            if (transactions.length === 0) {
+                tbody.style.display = "none";
+                noTransactions.style.display = "block";
+            } else {
+                noTransactions.style.display = "none";
+                tbody.style.display = "table-row-group";
+                tbody.innerHTML = transactions
+                    .map(transaction => `
+                        <tr>
+                            <td>${transaction.id.slice(-8)}</td>
+                            <td>${transaction.items.length} item(s)</td>
+                            <td>$${transaction.total.toFixed(2)}</td>
+                            <td>${transaction.status}</td>
+                            <td>${new Date(transaction.date).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-outline" onclick="showTransactionDetail('${transaction.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    `).join("");
+            }
+        }
+
+        // Fungsi untuk menampilkan detail transaksi di modal
+        function showTransactionDetail(transactionId) {
+            const storedTransactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+            const transaction = storedTransactions.find(t => t.id === transactionId);
+
+            if (transaction) {
+                const content = document.getElementById("transactionDetailContent");
+                content.innerHTML = `
+                    <h3>Transaction #${transaction.id.slice(-8)}</h3>
+                    <p><strong>Date:</strong> ${new Date(transaction.date).toLocaleString()}</p>
+                    <p><strong>Total:</strong> $${transaction.total.toFixed(2)}</p>
+                    <p><strong>Status:</strong> ${transaction.status}</p>
+                    <h4>Shipping Information</h4>
+                    <p>${transaction.shippingInfo.firstName} ${transaction.shippingInfo.lastName}</p>
+                    <p>${transaction.shippingInfo.address}, ${transaction.shippingInfo.city}, ${transaction.shippingInfo.state} ${transaction.shippingInfo.zipCode}</p>
+                    <p>Email: ${transaction.shippingInfo.email}</p>
+                    <p>Phone: ${transaction.shippingInfo.phone}</p>
+                    <h4>Payment Information</h4>
+                    <p>Name on Card: ${transaction.paymentInfo.cardName}</p>
+                    <p>Card Number: ${transaction.paymentInfo.cardNumber}</p>
+                    <p>Expiry Date: ${transaction.paymentInfo.expiryDate}</p>
+                    <h4>Items</h4>
+                    <ul>
+                        ${transaction.items.map(item => `
+                            <li>${item.name} (Qty: ${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}</li>
+                        `).join("")}
+                    </ul>
+                `;
+                document.getElementById("transactionDetailModal").style.display = "block";
+            }
+        }
+
+        // Fungsi untuk menutup modal
+        function closeTransactionModal() {
+            document.getElementById("transactionDetailModal").style.display = "none";
+        }
+
+        // Muat saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            loadTransactions();
+        });
+    </script>
+</body>
+</html>

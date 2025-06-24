@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Produk - .feastion Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">.feastion</a>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-outline">Back to Site</a>
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="admin.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin-products.html" class="nav-item active">
+                    <i class="fas fa-box"></i>
+                    <span>Kelola Produk</span>
+                </a>
+                <a href="admin-articles.html" class="nav-item">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Kelola Artikel</span>
+                </a>
+                <a href="admin-users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Kelola Pengguna</span>
+                </a>
+                <a href="admin-transactions.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Kelola Transaksi</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Kelola Produk</h1>
+                <button class="btn btn-primary" onclick="showAddProductModal()">
+                    <i class="fas fa-plus"></i> Tambah Produk
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="admin-filters">
+                <div class="filter-group">
+                    <input type="text" id="searchProducts" placeholder="Cari produk..." class="form-input">
+                </div>
+                <div class="filter-group">
+                    <select id="filterCategory" class="form-select">
+                        <option value="">Semua Kategori</option>
+                        <option value="Dresses">Dresses</option>
+                        <option value="Jeans">Jeans</option>
+                        <option value="Jackets">Jackets</option>
+                        <option value="Tops">Tops</option>
+                        <option value="Accessories">Accessories</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="admin-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Nama Produk</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Products will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Tambah Produk</h3>
+                <button class="modal-close" onclick="closeProductModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nama Produk</label>
+                            <input type="text" id="productName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <select id="productCategory" class="form-select" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="Dresses">Dresses</option>
+                                <option value="Jeans">Jeans</option>
+                                <option value="Jackets">Jackets</option>
+                                <option value="Tops">Tops</option>
+                                <option value="Accessories">Accessories</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Harga</label>
+                            <input type="number" id="productPrice" class="form-input" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stok</label>
+                            <input type="number" id="productStock" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea id="productDescription" class="form-textarea" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Gambar Produk</label>
+                        <input type="file" id="imageInput" />
+                        <img id="imagePreview" src="" />
+                        <input type="hidden" id="imageData" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="productStatus" class="form-select">
+                            <option value="active">Aktif</option>
+                            <option value="inactive">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeProductModal()">Batal</button>
+                <button type="submit" form="productForm" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-products.js"></script>
+    <script>
+        // Sinkronisasi dengan products.html menggunakan event storage
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'products') {
+                loadProducts(); // Memuat ulang produk saat ada perubahan di localStorage
+            }
+        });
+
+        // Fungsi untuk mendukung products.html
+        window.getProductById = function(id) {
+            const storedProducts = localStorage.getItem("products");
+            return storedProducts ? JSON.parse(storedProducts).find(p => p.id === id) : null;
+        };
+    </script>
+</body>
+</html>

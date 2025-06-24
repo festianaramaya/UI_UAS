@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kelola Transaksi - .feastion Admin</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <a href="index.html">.feastion</a>
+        </div>
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-outline">Back to Site</a>
+          <button onclick="logout()" class="btn btn-danger">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <nav class="admin-nav">
+        <a href="admin.html" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="admin-products.html" class="nav-item"><i class="fas fa-box"></i><span>Kelola Produk</span></a>
+        <a href="admin-articles.html" class="nav-item"><i class="fas fa-newspaper"></i><span>Kelola Artikel</span></a>
+        <a href="admin-users.html" class="nav-item"><i class="fas fa-users"></i><span>Kelola Pengguna</span></a>
+        <a href="admin-transactions.html" class="nav-item active"><i class="fas fa-shopping-cart"></i><span>Kelola Transaksi</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <div class="admin-header">
+        <h1>Kelola Transaksi</h1>
+        <div class="header-stats">
+          <div class="stat-item">
+            <span class="stat-label">Total Transaksi:</span>
+            <span class="stat-value" id="totalTransactions">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total Revenue:</span>
+            <span class="stat-value" id="totalRevenue">$0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="admin-filters">
+        <div class="filter-group">
+          <input type="text" id="search" placeholder="Cari transaksi..." class="form-input"/>
+        </div>
+        <div class="filter-group">
+          <select id="filterStatus" class="form-select">
+            <option value="">Semua Status</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="refunded">Refunded</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <input type="date" id="filterDateFrom" class="form-input"/>
+        </div>
+        <div class="filter-group">
+          <input type="date" id="filterDateTo" class="form-input"/>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="admin-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Transaksi</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Tanggal</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTableBody">
+            <!-- Isi transaksi di-generate oleh JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Detail Transaksi -->
+  <div class="modal" id="transactionModal">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 class="modal-title">Detail Transaksi</h3>
+        <button class="modal-close" onclick="closeTransactionModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="transactionDetail">
+        <!-- Detail transaksi akan dimuat lewat JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeTransactionModal()">Tutup</button>
+        <button type="button" class="btn btn-primary" id="updateStatusBtn" onclick="showUpdateStatusModal()">Update Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Update Status -->
+  <div class="modal" id="statusModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Update Status Transaksi</h3>
+        <button class="modal-close" onclick="closeStatusModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="statusForm">
+          <input type="hidden" id="statusTransactionId"/>
+          <div class="form-group">
+            <label class="form-label">Status Baru</label>
+            <select id="transactionStatus" class="form-select" required>
+              <option value="">Pilih Status</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="refunded">Refunded</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Catatan (Opsional)</label>
+            <textarea id="statusNote" class="form-textarea" rows="3" placeholder="Tambahkan catatan untuk perubahan status..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeStatusModal()">Batal</button>
+        <button type="submit" form="statusForm" class="btn btn-primary">Update Status</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/auth.js"></script>
+  <script src="js/admin-transactions.js"></script>
+</body>
+</html>

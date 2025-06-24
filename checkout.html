@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - .feastion</title>
+    <link href="/globals.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">.feastion</a></div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="articles.html">Articles</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown" id="userDropdown">
+                        <div id="loginSection">
+                            <a href="#" onclick="login('user')">Login as User</a>
+                            <a href="#" onclick="login('admin')">Login as Admin</a>
+                        </div>
+                        <div id="userSection" style="display: none;">
+                            <a href="history-transactions.html">Order History</a>
+                            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Checkout</h1>
+            </div>
+
+            <form id="checkoutForm" class="checkout-form">
+                <div class="checkout-section">
+                    <h2>Shipping Information</h2>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <input type="text" name="firstName" class="form-input" placeholder="First Name" required>
+                            <input type="text" name="lastName" class="form-input" placeholder="Last Name" required>
+                        </div>
+                            <input type="email" name="email" class="form-input" placeholder="Email" required>
+                            <input type="tel" name="phone" class="form-input" placeholder="Phone" required>
+                            <input type="text" name="address" class="form-input" placeholder="Address" required>
+                            <div class="form-row">
+                                <input type="text" name="city" class="form-input" placeholder="City" required>
+                                <input type="text" name="state" class="form-input" placeholder="State" required>
+                                <input type="text" name="zipCode" class="form-input" placeholder="Zip Code" required>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="checkout-section">
+                    <h2>Payment Information</h2>
+                    <div class="form-group">
+                        <input type="text" name="cardName" class="form-input" placeholder="Name on Card" required>
+                        <div class="form-row">
+                            <input type="text" name="expiryDate" class="form-input" placeholder="Expiry Date (MM/YY)" required pattern="\d{2}/\d{2}">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="orderSummary"></div>
+                <button type="submit" class="btn btn-primary btn-lg w-100" id="placeOrderBtn">Place Order</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-bottom">
+            <p>© 2025 .feastion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/checkout.js"></script>
+</body>
+</html>

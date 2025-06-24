@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Artikel - .feastion Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">.feastion</a>
+                </div>
+                
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-outline">Back to Site</a>
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="admin.html" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin-products.html" class="nav-item">
+                    <i class="fas fa-box"></i>
+                    <span>Kelola Produk</span>
+                </a>
+                <a href="admin-articles.html" class="nav-item active">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Kelola Artikel</span>
+                </a>
+                <a href="admin-users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Kelola Pengguna</span>
+                </a>
+                <a href="admin-transactions.html" class="nav-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Kelola Transaksi</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Kelola Artikel</h1>
+                <button class="btn btn-primary" onclick="showAddArticleModal()">
+                    <i class="fas fa-plus"></i> Tambah Artikel
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="admin-filters">
+                <div class="filter-group">
+                    <input type="text" id="searchArticles" placeholder="Cari artikel..." class="form-input">
+                </div>
+                <div class="filter-group">
+                    <select id="filterCategory" class="form-select">
+                        <option value="">Semua Kategori</option>
+                        <option value="Trends">Trends</option>
+                        <option value="Style Guide">Style Guide</option>
+                        <option value="Sustainability">Sustainability</option>
+                        <option value="Collections">Collections</option>
+                        <option value="Photography">Photography</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Articles Table -->
+            <div class="admin-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gambar</th>
+                            <th>Judul</th>
+                            <th>Kategori</th>
+                            <th>Penulis</th>
+                            <th>Tanggal</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTableBody">
+                        <!-- Articles will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Article Modal -->
+    <div class="modal" id="articleModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Tambah Artikel</h3>
+                <button class="modal-close" onclick="closeArticleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="articleForm">
+                    <input type="hidden" id="articleId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Judul Artikel</label>
+                            <input type="text" id="articleTitle" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Kategori</label>
+                            <select id="articleCategory" class="form-select" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="Trends">Trends</option>
+                                <option value="Style Guide">Style Guide</option>
+                                <option value="Sustainability">Sustainability</option>
+                                <option value="Collections">Collections</option>
+                                <option value="Photography">Photography</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Penulis</label>
+                            <input type="text" id="articleAuthor" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Waktu Baca (menit)</label>
+                            <input type="number" id="articleReadTime" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Excerpt</label>
+                        <textarea id="articleExcerpt" class="form-textarea" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Konten Artikel</label>
+                        <textarea id="articleContent" class="form-textarea" rows="10" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">URL Gambar</label>
+                        <input type="url" id="articleImage" class="form-input" placeholder="https://example.com/image.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select id="articleStatus" class="form-select">
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeArticleModal()">Batal</button>
+                <button type="submit" form="articleForm" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin-articles.js"></script>
+</body>
+</html>

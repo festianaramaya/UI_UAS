@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Detail - .feastion</title>
+    <link href="globals.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/article-detail.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">.feastion</a></div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="articles.html">Articles</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown" id="userDropdown">
+                        <div id="loginSection">
+                            <a href="#" onclick="login('user')">Login as User</a>
+                            <a href="#" onclick="login('admin')">Login as Admin</a>
+                        </div>
+                        <div id="userSection" style="display: none;">
+                            <a href="history-transactions.html">Order History</a>
+                            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Article Detail</h1>
+            </div>
+            <div id="articleDetail" class="article-detail"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>.feastion</h3>
+                <p>Your premier destination for fashion-forward clothing and accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 .feastion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/articles.js"></script>
+    <script src="js/article-detail.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get("id");
+            const article = window.getArticleById(articleId);
+
+            const detailContainer = document.getElementById("articleDetail");
+            if (article) {
+                detailContainer.innerHTML = `
+                    <div class="article-detail-card">
+                        <img src="${article.image}" alt="${article.title}" class="article-image">
+                        <div class="article-detail-info">
+                            <div class="article-category">${article.category}</div>
+                            <h2 class="article-title">${article.title}</h2>
+                            <div class="article-meta">
+                                <div><i class="fas fa-user"></i> ${article.author}</div>
+                                <div><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString()}</div>
+                                <div><i class="fas fa-clock"></i> ${article.readTime} min read</div>
+                            </div>
+                            <div class="article-content">${article.content}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                detailContainer.innerHTML = "<p>Article not found.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles - .feastion</title>
+    <link href="/globals.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">.feastion</a></div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="articles.html" class="active">Articles</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown" id="userDropdown">
+                        <div id="loginSection">
+                            <a href="#" onclick="login('user')">Login as User</a>
+                            <a href="#" onclick="login('admin')">Login as Admin</a>
+                        </div>
+                        <div id="userSection" style="display: none;">
+                            <a href="history-transactions.html">Order History</a>
+                            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Articles</h1>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="text" id="articleSearch" class="form-input" placeholder="Search articles...">
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" class="form-select">
+                        <option value="all">All Categories</option>
+                        <option value="Trends">Trends</option>
+                        <option value="Style Guide">Style Guide</option>
+                        <option value="Sustainability">Sustainability</option>
+                        <option value="Collections">Collections</option>
+                        <option value="Photography">Photography</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="articles-grid" id="articlesGrid"></div>
+            <div id="noResults" class="text-center mt-3" style="display: none;">
+                <p>No articles found matching your criteria.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>.feastion</h3>
+                <p>Your premier destination for fashion-forward clothing and accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 .feastion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/articles.js"></script>
+    <script>
+        // Memuat artikel dari localStorage
+        function loadArticles() {
+            const storedArticles = localStorage.getItem("articles");
+            const articles = storedArticles ? JSON.parse(storedArticles) : [];
+            displayArticles("", "all", articles); // Default load
+        }
+
+        function displayArticles(query = "", category = "all", articles = []) {
+            const container = document.getElementById("articlesGrid");
+            const noResults = document.getElementById("noResults");
+
+            if (!container) return;
+
+            const filtered = articles.filter((article) => {
+                const matchesQuery =
+                    article.title.toLowerCase().includes(query.toLowerCase()) ||
+                    article.excerpt.toLowerCase().includes(query.toLowerCase());
+                const matchesCategory = category === "all" || article.category === category;
+                return matchesQuery && matchesCategory;
+            });
+
+            // Sort by date (newest first)
+            filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+            if (filtered.length === 0) {
+                container.innerHTML = "";
+                noResults.style.display = "block";
+                return;
+            }
+
+            noResults.style.display = "none";
+            container.innerHTML = filtered
+                .map(
+                    (article) => `
+                        <div class="article-card">
+                            <img src="${article.image}" alt="${article.title}" class="article-image">
+                            <div class="article-info">
+                                <div class="article-category">${article.category}</div>
+                                <h3 class="article-title">${article.title}</h3>
+                                <p class="article-excerpt">${article.excerpt}</p>
+                                <div class="article-meta">
+                                    <div><i class="fas fa-user"></i> ${article.author}</div>
+                                    <div><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString()}</div>
+                                </div>
+                                <a href="article-detail.html?id=${article.id}" class="btn btn-outline w-100">Read More</a>
+                            </div>
+                        </div>
+                    `,
+                )
+                .join("");
+        }
+
+        function setupFilters() {
+            const searchInput = document.getElementById("articleSearch");
+            const categoryFilter = document.getElementById("categoryFilter");
+
+            function updateArticles() {
+                const query = searchInput ? searchInput.value : "";
+                const category = categoryFilter ? categoryFilter.value : "all";
+                const storedArticles = localStorage.getItem("articles");
+                const articles = storedArticles ? JSON.parse(storedArticles) : [];
+                displayArticles(query, category, articles);
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener("input", updateArticles);
+            }
+
+            if (categoryFilter) {
+                categoryFilter.addEventListener("change", updateArticles);
+            }
+        }
+
+        // Sinkronisasi dengan admin-articles.html
+        window.addEventListener("storage", (event) => {
+            if (event.key === "articles") {
+                loadArticles();
+            }
+        });
+
+        // Muat saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            loadArticles();
+            setupFilters();
+        });
+    </script>
+</body>
+</html>

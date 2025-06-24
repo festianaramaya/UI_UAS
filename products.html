@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - .feastion</title>
+    <link href="/globals.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/products.css">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">.feastion</a></div>
+            <nav class="nav">
+                <a href="index.html">Home</a>
+                <a href="products.html" class="active">Products</a>
+                <a href="articles.html">Articles</a>
+            </nav>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <div class="header-actions">
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <div class="user-menu">
+                    <button class="user-btn" id="userBtn"><i class="fas fa-user"></i></button>
+                    <div class="dropdown" id="userDropdown">
+                        <div id="loginSection">
+                            <a href="#" onclick="login('user')">Login as User</a>
+                            <a href="#" onclick="login('admin')">Login as Admin</a>
+                        </div>
+                        <div id="userSection" style="display: none;">
+                            <a href="history-transactions.html">Order History</a>
+                            <a href="admin.html" id="adminLink" style="display: none;">Admin Dashboard</a>
+                            <a href="#" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Products</h1>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <input type="text" id="productSearch" class="form-input" placeholder="Search products...">
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" class="form-select">
+                        <option value="all">All Categories</option>
+                        <option value="Dresses">Dresses</option>
+                        <option value="Jeans">Jeans</option>
+                        <option value="Jackets">Jackets</option>
+                        <option value="Tops">Tops</option>
+                        <option value="Accessories">Accessories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="sortFilter" class="form-select">
+                        <option value="name">Sort by Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="products-grid" id="productsGrid"></div>
+            <div id="noResults" class="text-center mt-3" style="display: none;">
+                <p>No products found matching your criteria.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>.feastion</h3>
+                <p>Your premier destination for fashion-forward clothing and accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="articles.html">Articles</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>© 2025 .feastion. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/products-data.js"></script> <!-- ← data produk -->
+    <script src="js/product-manager.js"></script> <!-- ← helper pencarian -->
+    <script src="js/products.js"></script>
+    <script src="js/products-page.js"></script>
+    <script>
+        // Memuat produk dari localStorage
+        function loadProducts(productsToDisplay = null) {
+            const productGrid = document.getElementById("productsGrid");
+            const noResults = document.getElementById("noResults");
+            const storedProducts = localStorage.getItem("products");
+            const products = storedProducts ? JSON.parse(storedProducts).filter(p => p.status === "active") : [];
+
+            if (products.length === 0) {
+                productGrid.style.display = "none";
+                noResults.style.display = "block";
+            } else {
+                productGrid.style.display = "grid";
+                noResults.style.display = "none";
+                productGrid.innerHTML = products
+                    .map(product => `
+                        <div class="product-card">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                            <div class="product-info">
+                                <div class="product-category">${product.category}</div>
+                                <h3 class="product-name">${product.name}</h3>
+                                <p class="product-description">${product.description}</p>
+                                <div class="product-price">$${product.price.toFixed(2)}</div>
+                                <div class="action-buttons product-actions">
+                                    <button onclick="addToCart(${JSON.stringify({
+                                        id: product.id,
+                                        name: product.name,
+                                        price: product.price,
+                                        image: product.image,
+                                    }).replace(/"/g, "&quot;")})" class="btn btn-primary">
+                                        Add to Cart
+                                    </button>
+                                    <button onclick="addToFavorites(${JSON.stringify({
+                                        id: product.id,
+                                        name: product.name,
+                                        image: product.image,
+                                    }).replace(/"/g, "&quot;")})" class="btn btn-outline">
+                                        Add to Favorites
+                                    </button>
+                                    <a href="product-detail.html?id=${product.id}" class="btn btn-outline">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join("");
+            }
+        }
+
+        function setupFilters() {
+            const searchInput = document.getElementById("productSearch");
+            const categoryFilter = document.getElementById("categoryFilter");
+            const sortFilter = document.getElementById("sortFilter");
+
+            function applyFilters() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const category = categoryFilter.value;
+                const sortBy = sortFilter.value;
+                const storedProducts = localStorage.getItem("products");
+                const products = storedProducts ? JSON.parse(storedProducts).filter(p => p.status === "active") : [];
+
+                const filteredProducts = products.filter((product) => {
+                    const matchesQuery =
+                        product.name.toLowerCase().includes(searchTerm) ||
+                        product.description.toLowerCase().includes(searchTerm);
+                    const matchesCategory = category === "all" || product.category === category;
+                    return matchesQuery && matchesCategory;
+                });
+
+                // Sort products
+                filteredProducts.sort((a, b) => {
+                    switch (sortBy) {
+                        case "price-low":
+                            return a.price - b.price;
+                        case "price-high":
+                            return b.price - a.price;
+                        case "name":
+                        default:
+                            return a.name.localeCompare(b.name);
+                    }
+                });
+
+                loadProducts(filteredProducts);
+            }
+
+            searchInput.addEventListener("input", applyFilters);
+            categoryFilter.addEventListener("change", applyFilters);
+            sortFilter.addEventListener("change", applyFilters);
+        }
+
+        // Sinkronisasi dengan admin-products.html
+        window.addEventListener("storage", (event) => {
+            if (event.key === "products") {
+                loadProducts();
+            }
+        });
+
+        // Fungsi untuk menambahkan ke favorit
+        function addToFavorites(product) {
+            let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+            const existingFavorite = favorites.find(fav => fav.id === product.id);
+            if (!existingFavorite) {
+                favorites.push(product);
+                localStorage.setItem("favorites", JSON.stringify(favorites));
+                alert(`${product.name} added to favorites!`);
+            } else {
+                alert(`${product.name} is already in favorites!`);
+            }
+        }
+
+        // Muat saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProducts();
+            setupFilters();
+        });
+    </script>
+</body>
+</html>
