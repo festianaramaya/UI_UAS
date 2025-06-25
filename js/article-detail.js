@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const articleId = urlParams.get("id");
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get("id");
 
-  // Ambil artikel dari localStorage
-  const storedArticles = localStorage.getItem("articles");
-  const articles = storedArticles ? JSON.parse(storedArticles) : [];
+    const storedArticles = localStorage.getItem("articles");
+    const articles = storedArticles ? JSON.parse(storedArticles) : [];
 
-  const article = articles.find((a) => a.id === articleId);
+    const article = articles.find((a) => a.id === articleId);
 
-  const detailContainer = document.getElementById("articleDetail");
-  if (article) {
-    detailContainer.innerHTML = `
+    const detailContainer = document.getElementById("articleDetail");
+
+    if (article) {
+        detailContainer.innerHTML = `
       <div class="article-detail-card">
           <img src="${article.image}" alt="${article.title}" class="article-image">
           <div class="article-detail-info">
@@ -21,11 +21,18 @@ document.addEventListener("DOMContentLoaded", () => {
                   <div><i class="fas fa-calendar"></i> ${new Date(article.date).toLocaleDateString()}</div>
                   <div><i class="fas fa-clock"></i> ${article.readTime} min read</div>
               </div>
-              <div class="article-content">${article.content}</div>
+              <div class="article-content">
+                  ${article.content || ""}
+              </div>
+              ${
+                article.link
+                  ? `<a href="${article.link}" target="_blank" class="btn btn-outline mt-3">Baca Selengkapnya</a>`
+                  : ""
+              }
           </div>
       </div>
     `;
-  } else {
-    detailContainer.innerHTML = "<p>Artikel tidak ditemukan.</p>";
-  }
+    } else {
+        detailContainer.innerHTML = "<p>Artikel tidak ditemukan.</p>";
+    }
 });

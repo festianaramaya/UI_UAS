@@ -173,6 +173,32 @@ body {
   text-align: center;
 }
 
+.hero-with-bg {
+   background-image: url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.hero-with-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* efek overlay hitam transparan */
+}
+
+.hero-with-bg .hero-content {
+    position: relative;
+    z-index: 2;
+}
+
 .hero-content h1 {
   font-size: 4rem;
   font-weight: bold;
