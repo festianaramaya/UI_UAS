@@ -14,7 +14,7 @@ const productsManager = {
       category: "Category 1",
       description: "Description of Product 1",
       price: 100,
-      image: "./images/product1.jpg", // ✅ pakai gambar lokal
+      image: "images/product1.jpg", // ✅ pakai gambar lokal
     },
     {
       id: "2",
@@ -22,7 +22,7 @@ const productsManager = {
       category: "Category 2",
       description: "Description of Product 2",
       price: 200,
-      image: "./images/product2.jpg",
+      image: "images/product2.jpg",
     },
     {
       id: "3",
@@ -30,7 +30,7 @@ const productsManager = {
       category: "Category 3",
       description: "Description of Product 3",
       price: 300,
-      image: "./images/product3.jpg",
+      image: "images/product3.jpg",
     },
   ]
 }
@@ -75,7 +75,7 @@ function loadFeaturedArticles() {
       id: "1",
       title: "Summer Fashion Trends 2024",
       excerpt: "Discover the hottest fashion trends for this summer season...",
-      image: "./images/article1.jpg", // ✅ ganti ke gambar lokal jika tersedia
+      image: "images/article1.jpg", // ✅ ganti ke gambar lokal jika tersedia
       author: "Sarah Johnson",
       date: "2024-06-15",
       category: "Trends",
@@ -84,7 +84,7 @@ function loadFeaturedArticles() {
       id: "2",
       title: "How to Style Your Wardrobe",
       excerpt: "Learn professional tips on how to mix and match your clothes...",
-      image: "./images/article2.jpg",
+      image: "images/article2.jpg",
       author: "Mike Chen",
       date: "2024-06-10",
       category: "Style Guide",
@@ -93,7 +93,7 @@ function loadFeaturedArticles() {
       id: "3",
       title: "Sustainable Fashion Choices",
       excerpt: "Make environmentally conscious decisions in your fashion choices...",
-      image: "./images/article3.jpg",
+      image: "images/article3.jpg",
       author: "Emma Davis",
       date: "2024-06-05",
       category: "Sustainability",

@@ -1,8 +1,9 @@
 // Admin Articles Management
 document.addEventListener("DOMContentLoaded", () => {
-    const authManager = {
-        isAdmin: () => localStorage.getItem("userRole") === "admin", // Asumsi autentikasi sederhana
-    };
+    
+    // const authManager = {
+    //     isAdmin: () => localStorage.getItem("userRole") === "admin", // Asumsi autentikasi sederhana
+    // };
 
     if (!authManager.isAdmin()) {
         window.location.href = "index.html";
